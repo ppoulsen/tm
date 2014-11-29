@@ -24,10 +24,11 @@ typedef struct {
 
 typedef struct {
 	transition *transitions;
-	uint8_t tCount; 
+	uint32_t tCount; 
+	uint32_t maxTCount; 
 } TM;
 
-void tm_init(TM *tm, const char *tmString);
+void tm_init(TM *tm, char *tmString);
 TM_RESULT test_string(TM *tm, const char *testString);
 
 #endif /* TM_H_ */
