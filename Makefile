@@ -3,6 +3,8 @@ DEPS = tm.h
 OBJ = tm.o proj2.o
 BIN = proj2
 
+all: clean $(BIN)
+
 .PHONY: clean
 
 clean:
