@@ -149,23 +149,53 @@ void tm_init(TM *tm, char *tmString) {
 void perform_transitions(TM *tm, TEST_STATE *ts) {
 	uint32_t i;
 	uint32_t stateCount = ts->stateCount;
+	
+	// Add new states to end
 	for (i = 0; i < stateCount; i++) {
 		uint32_t j;
 		for (j = 0; j < tm->tCount; j++) {
-			
+			if (
+					(strncmp(ts->states[i].curState, tm->transitions[j].curState, 3) == 0) &&
+					(ts->states[i].tape[ts->states[i].tapePos] == tm->transitions[j].curTape)
+			) {
+					uint32_t tapePos = ts->states[i].tapePos;
+					char oldTape = tm->transitions[j].curTape;
+					uint32_t newTapePos = tm->transitions[j].dir == R ? tapePos + 1 : tapePos - 1;
+					ts->states[i].tape[tapePos] = tm->transitions[j].nextTape;
+					add_state(ts, tm->transitions[j].nextState, ts->states[i].tape, newTapePos); 
+					ts->states[i].tape[tapePos] = oldTape;
+			}
 		}
 	}
+
+	// Shift states downward to delete old ones
+	for (i = 0; i < stateCount && i < ts->stateCount - stateCount; i++) {
+		// Add state
+		strncpy(ts->states[i].tape, ts->states[i + stateCount].tape, 1024);
+		ts->states[i].tapePos = ts->states[i + stateCount].tapePos;
+		strncpy(ts->states[i].curState, ts->states[i + stateCount].curState, 3);
+	}
+	ts->stateCount -= stateCount;
 }
 
 uint8_t accepted(TEST_STATE *ts) {
+	uint32_t i;
+	for (i = 0; i < ts->stateCount; i++) {
+		if (strncmp(ts->states[i].curState, "qa", 3) == 0) {
+			return 1;
+		}
+	}
 	return 0;
 }
 
 uint8_t rejected(TEST_STATE *ts) {
-	return 0;
-}
-
-void prune(TEST_STATE *ts) {
+	uint32_t i;
+	for (i = 0; i < ts->stateCount; i++) {
+		if (strncmp(ts->states[i].curState, "qr", 3) != 0) {
+			return 0;
+		}
+	}
+	return 1;
 }
 
 TM_RESULT test_string(TM *tm, const char *testString) {
@@ -195,9 +225,7 @@ TM_RESULT test_string(TM *tm, const char *testString) {
 			return ACCEPT;
 		} else if (rejected(&testState)) {
 			return REJECT;
-		} else {
-			prune(&testState);
-		}
+		} 
 		
 		testState.transitionCount++;
 	} 

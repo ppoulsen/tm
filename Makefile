@@ -11,7 +11,7 @@ clean:
 	rm -f $(BIN) *.o
 
 %.o: %.c $(DEPS)
-	$(CC) -c -o $@ $<
+	$(CC) -c -g -o $@ $<
 
 $(BIN): $(OBJ)
-	$(CC) -o $@ $^
+	$(CC) -g -o $@ $^
