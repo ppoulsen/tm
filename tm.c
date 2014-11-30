@@ -147,6 +147,14 @@ void tm_init(TM *tm, char *tmString) {
 }
 
 void perform_transitions(TM *tm, TEST_STATE *ts) {
+	uint32_t i;
+	uint32_t stateCount = ts->stateCount;
+	for (i = 0; i < stateCount; i++) {
+		uint32_t j;
+		for (j = 0; j < tm->tCount; j++) {
+			
+		}
+	}
 }
 
 uint8_t accepted(TEST_STATE *ts) {
