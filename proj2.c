@@ -12,10 +12,16 @@ void main(void) {
 	while(getline(&line, &lineSize, stdin) >= 0) {
 		TM tm;
 		TM_RESULT result;
+		uint32_t splitIndex = 0;
 		
 		// Split input line into TM definition and input string
-		char *tmString = strtok(line, "##");
-		char *testString = strtok(NULL, "##");
+		while (!(line[splitIndex] == '#' && line[splitIndex+1] == '#')) {
+			splitIndex++;
+		}
+		char tmString[1024] = {'\0'};
+		char testString[1024] = {'\0'};
+		strncpy(tmString, line, splitIndex);
+		strcpy(testString, line + splitIndex + 2);
 		
 		// Initialize TM and test testString against it
 		tm_init(&tm, tmString);
