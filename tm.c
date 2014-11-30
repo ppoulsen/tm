@@ -150,7 +150,7 @@ void perform_transitions(TM *tm, TEST_STATE *ts) {
 	uint32_t i;
 	uint32_t stateCount = ts->stateCount;
 	
-	// Add new states to end
+	// Add new states to end 
 	for (i = 0; i < stateCount; i++) {
 		uint32_t j;
 		for (j = 0; j < tm->tCount; j++) {
@@ -199,18 +199,22 @@ uint8_t rejected(TEST_STATE *ts) {
 }
 
 TM_RESULT test_string(TM *tm, const char *testString) {
-	uint32_t i;
+	uint32_t i = 0;
 	// Initialize testState for tracking all possible tapes
 	TEST_STATE testState;
-	char tape[1024] = {'_'};
-	tape[1023] = '\0';
+	char tape[1024];
 	testState.states = NULL;
 	testState.stateCount = 0;
 	testState.maxStateCount = 0;
 	testState.transitionCount = 0;
 	
 	// Initialize tape
-	while(testString[i] != '#') {
+	for (i = 0; i < 1024; i++) {
+		tape[i] = '_';
+	}
+	tape[1023] = '\0';
+	i = 0;
+	while(testString[i] != '#' && testString[i] != 'e') {
 		tape[i] = testString[i];
 		i++;
 	}
